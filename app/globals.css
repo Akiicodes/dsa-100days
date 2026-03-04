@@ -2,16 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* Smooth UI */
-
 * {
   transition: all 0.2s ease-in-out;
 }
 
-
-/* Page Background */
-
+/* Animated background */
 .gradient-bg {
   background: linear-gradient(
     270deg,
@@ -24,47 +20,13 @@
   animation: gradientMove 15s ease infinite;
 }
 
-
-/* Background Animation */
-
 @keyframes gradientMove {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
-
-
-/* Code Block Border Animation */
 
 .animate-gradient {
   background-size: 300% 300%;
   animation: gradientMove 6s ease infinite;
-}
-
-
-/* Scrollbar Styling */
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #020617;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
 }
