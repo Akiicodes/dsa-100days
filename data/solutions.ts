@@ -2955,12 +2955,13 @@ int main() {
     while(top != -1)
         postfix[k++] = pop();
 
-    postfix[k] = '\0';
+    postfix[k] = '\\0';
 
     printf("%s", postfix);
 
     return 0;
-}`,
+}
+`,
     leetcode: `#include <stdlib.h>
 #include <string.h>
 
