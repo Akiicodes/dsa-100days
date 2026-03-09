@@ -3385,6 +3385,177 @@ void myCircularDequeFree(MyCircularDeque* obj) {
     free(obj);
 }
 `
+  },
+  37: {
+    github: `  /*Problem Statement:
+Implement a Priority Queue using an array. An element with smaller value has higher priority.
+
+Supported Operations:
+- insert x
+- delete
+- peek
+
+Input Format:
+- First line contains integer N
+- Next N lines contain operations
+
+Output Format:
+- Print the deleted or peeked element
+- Print -1 if the queue is empty
+
+Example:
+Input:
+5
+insert 30
+insert 10
+insert 20
+delete
+peek
+
+Output:
+10
+20*/
+
+//Solution:
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+int pq[MAX];
+int size = 0;
+
+void insert(int x) {
+    int i = size - 1;
+
+    while(i >= 0 && pq[i] > x) {
+        pq[i + 1] = pq[i];
+        i--;
+    }
+
+    pq[i + 1] = x;
+    size++;
+}
+
+int deleteMin() {
+    if(size == 0)
+        return -1;
+
+    int val = pq[0];
+
+    for(int i = 1; i < size; i++)
+        pq[i - 1] = pq[i];
+
+    size--;
+
+    return val;
+}
+
+int peek() {
+    if(size == 0)
+        return -1;
+    return pq[0];
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    while(n--) {
+        char op[10];
+        scanf("%s", op);
+
+        if(strcmp(op, "insert") == 0) {
+            int x;
+            scanf("%d", &x);
+            insert(x);
+        }
+        else if(strcmp(op, "delete") == 0) {
+            printf("%d\n", deleteMin());
+        }
+        else if(strcmp(op, "peek") == 0) {
+            printf("%d\n", peek());
+        }
+    }
+
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+typedef struct {
+    int *heap;
+    int size;
+    int k;
+} KthLargest;
+
+int kthLargestAdd(KthLargest* obj, int val);
+
+void swap(int *a, int *b){
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+void heapifyUp(KthLargest *obj, int i){
+    while(i > 0){
+        int parent = (i - 1) / 2;
+        if(obj->heap[parent] <= obj->heap[i]) break;
+        swap(&obj->heap[parent], &obj->heap[i]);
+        i = parent;
+    }
+}
+
+void heapifyDown(KthLargest *obj, int i){
+    while(1){
+        int left = 2*i + 1;
+        int right = 2*i + 2;
+        int smallest = i;
+
+        if(left < obj->size && obj->heap[left] < obj->heap[smallest])
+            smallest = left;
+        if(right < obj->size && obj->heap[right] < obj->heap[smallest])
+            smallest = right;
+
+        if(smallest == i) break;
+
+        swap(&obj->heap[i], &obj->heap[smallest]);
+        i = smallest;
+    }
+}
+
+KthLargest* kthLargestCreate(int k, int* nums, int numsSize) {
+    KthLargest *obj = (KthLargest*)malloc(sizeof(KthLargest));
+    obj->heap = (int*)malloc(sizeof(int)*k);
+    obj->size = 0;
+    obj->k = k;
+
+    for(int i = 0; i < numsSize; i++)
+        kthLargestAdd(obj, nums[i]);
+
+    return obj;
+}
+
+int kthLargestAdd(KthLargest* obj, int val) {
+
+    if(obj->size < obj->k){
+        obj->heap[obj->size++] = val;
+        heapifyUp(obj, obj->size - 1);
+    }
+    else if(val > obj->heap[0]){
+        obj->heap[0] = val;
+        heapifyDown(obj, 0);
+    }
+
+    return obj->heap[0];
+}
+
+void kthLargestFree(KthLargest* obj) {
+    free(obj->heap);
+    free(obj);
+}
+`
   }
+
 
 }
