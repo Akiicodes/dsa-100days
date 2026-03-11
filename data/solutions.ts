@@ -3746,7 +3746,200 @@ int* maxSlidingWindow(int* nums, int numsSize, int k, int* returnSize) {
     return result;
 }
 `
-  }
+  },
+  39: {
+    github: `/*Problem Statement:
+Implement a Min Heap using an array where the smallest element is always at the root.
 
+Supported Operations:
+- insert x
+- extractMin
+- peek
 
+Input Format:
+- First line contains integer N
+- Next N lines contain heap operations
+
+Output Format:
+- Print results of extractMin and peek
+- Print -1 if operation cannot be performed
+
+Example:
+Input:
+6
+insert 40
+insert 10
+insert 30
+peek
+extractMin
+peek
+
+Output:
+10
+10
+30*/
+//Solution:
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 1000
+
+int heap[MAX];
+int size = 0;
+
+void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
 }
+
+void heapifyUp(int i) {
+    while(i > 0) {
+        int parent = (i - 1) / 2;
+        if(heap[parent] <= heap[i]) break;
+        swap(&heap[parent], &heap[i]);
+        i = parent;
+    }
+}
+
+void heapifyDown(int i) {
+    while(1) {
+        int left = 2*i + 1;
+        int right = 2*i + 2;
+        int smallest = i;
+
+        if(left < size && heap[left] < heap[smallest])
+            smallest = left;
+
+        if(right < size && heap[right] < heap[smallest])
+            smallest = right;
+
+        if(smallest == i) break;
+
+        swap(&heap[i], &heap[smallest]);
+        i = smallest;
+    }
+}
+
+void insert(int x) {
+    heap[size] = x;
+    heapifyUp(size);
+    size++;
+}
+
+int extractMin() {
+    if(size == 0) return -1;
+
+    int min = heap[0];
+    heap[0] = heap[size-1];
+    size--;
+    heapifyDown(0);
+
+    return min;
+}
+
+int peek() {
+    if(size == 0) return -1;
+    return heap[0];
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    while(n--) {
+        char op[20];
+        scanf("%s", op);
+
+        if(strcmp(op, "insert") == 0) {
+            int x;
+            scanf("%d", &x);
+            insert(x);
+        }
+        else if(strcmp(op, "extractMin") == 0) {
+            printf("%d\n", extractMin());
+        }
+        else if(strcmp(op, "peek") == 0) {
+            printf("%d\n", peek());
+        }
+    }
+
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+typedef struct {
+    int num;
+    int freq;
+} Node;
+
+void swap(Node *a, Node *b){
+    Node t = *a;
+    *a = *b;
+    *b = t;
+}
+
+void heapifyUp(Node heap[], int i){
+    while(i > 0){
+        int p = (i-1)/2;
+        if(heap[p].freq <= heap[i].freq) break;
+        swap(&heap[p], &heap[i]);
+        i = p;
+    }
+}
+
+void heapifyDown(Node heap[], int size, int i){
+    while(1){
+        int l = 2*i+1, r = 2*i+2, s = i;
+
+        if(l < size && heap[l].freq < heap[s].freq) s = l;
+        if(r < size && heap[r].freq < heap[s].freq) s = r;
+
+        if(s == i) break;
+
+        swap(&heap[i], &heap[s]);
+        i = s;
+    }
+}
+
+int* topKFrequent(int* nums, int numsSize, int k, int* returnSize) {
+
+    int offset = 10000;
+    int range = 20001;
+
+    int *freq = calloc(range,sizeof(int));
+
+    for(int i=0;i<numsSize;i++)
+        freq[nums[i]+offset]++;
+
+    Node *heap = malloc(sizeof(Node)*k);
+    int size = 0;
+
+    for(int i=0;i<range;i++){
+        if(freq[i] > 0){
+            Node node = {i-offset, freq[i]};
+
+            if(size < k){
+                heap[size] = node;
+                heapifyUp(heap,size);
+                size++;
+            }
+            else if(node.freq > heap[0].freq){
+                heap[0] = node;
+                heapifyDown(heap,size,0);
+            }
+        }
+    }
+
+    int *res = malloc(sizeof(int)*k);
+
+    for(int i=0;i<k;i++)
+        res[i] = heap[i].num;
+
+    *returnSize = k;
+    return res;
+}
+`
+  }
+ }
