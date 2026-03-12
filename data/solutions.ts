@@ -3941,5 +3941,85 @@ int* topKFrequent(int* nums, int numsSize, int k, int* returnSize) {
     return res;
 }
 `
+  },
+  40: {
+    github: `/*Implement Heap Sort using a Max Heap to sort an array in ascending order. First build a max heap, then repeatedly extract the maximum element and place it at the end of the array.*/
+//Solution:
+#include <stdio.h>
+
+void swap(int *a, int *b){
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+void heapify(int arr[], int n, int i){
+    int largest = i;
+    int left = 2*i + 1;
+    int right = 2*i + 2;
+
+    if(left < n && arr[left] > arr[largest])
+        largest = left;
+
+    if(right < n && arr[right] > arr[largest])
+        largest = right;
+
+    if(largest != i){
+        swap(&arr[i], &arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+
+void heapSort(int arr[], int n){
+
+    for(int i = n/2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    for(int i = n-1; i > 0; i--){
+        swap(&arr[0], &arr[i]);
+        heapify(arr, i, 0);
+    }
+}
+
+int main(){
+    int n;
+    scanf("%d",&n);
+
+    int arr[n];
+
+    for(int i=0;i<n;i++)
+        scanf("%d",&arr[i]);
+
+    heapSort(arr,n);
+
+    for(int i=0;i<n;i++)
+        printf("%d ",arr[i]);
+
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+int* dailyTemperatures(int* temperatures, int temperaturesSize, int* returnSize) {
+    
+    int* ans = (int*)calloc(temperaturesSize, sizeof(int));
+    int* stack = (int*)malloc(sizeof(int) * temperaturesSize);
+    int top = -1;
+
+    for(int i = 0; i < temperaturesSize; i++) {
+
+        while(top >= 0 && temperatures[i] > temperatures[stack[top]]) {
+            int prev = stack[top--];
+            ans[prev] = i - prev;
+        }
+
+        stack[++top] = i;
+    }
+
+    *returnSize = temperaturesSize;
+    free(stack);
+    return ans;
+}
+`
   }
  }
