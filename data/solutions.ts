@@ -6363,6 +6363,74 @@ int minCameraCover(struct TreeNode* root) {
     return cameras;
 }`
   },
+  61: {
+    github: `/*Problem: Build a graph with n vertices and m edges using adjacency matrix representation.
+The graph may be directed or undirected.
+
+Input:
+- n (vertices)
+- m (edges)
+- m pairs (u, v)
+
+Output:
+- n x n adjacency matrix*/
+//solution
+#include <stdio.h>
+
+int main() {
+    int n, m;
+    scanf("%d", &n);
+    scanf("%d", &m);
+
+    int adj[n][n];
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            adj[i][j] = 0;
+
+    int u, v;
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d", &u, &v);
+        adj[u][v] = 1;
+        adj[v][u] = 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            printf("%d ", adj[i][j]);
+        printf("\n");
+    }
+
+    return 0;
+}`,
+    leetcode: `void dfs(int** isConnected, int n, int* visited, int i) {
+    visited[i] = 1;
+
+    for (int j = 0; j < n; j++) {
+        if (isConnected[i][j] == 1 && !visited[j])
+            dfs(isConnected, n, visited, j);
+    }
+}
+
+int findCircleNum(int** isConnected, int isConnectedSize, int* isConnectedColSize) {
+    int n = isConnectedSize;
+    int visited[n];
+    
+    for (int i = 0; i < n; i++)
+        visited[i] = 0;
+
+    int count = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            dfs(isConnected, n, visited, i);
+            count++;
+        }
+    }
+
+    return count;
+}`
+  },
   
   
   
