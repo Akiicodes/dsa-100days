@@ -6619,6 +6619,138 @@ int** floodFill(int** image, int imageSize, int* imageColSize, int sr, int sc, i
     return image;
 }`
   },
+  64: {
+    github: `/*Problem: Perform BFS from a given source using queue.
+
+Input:
+- n
+- adjacency list
+- source s
+
+Output:
+- BFS traversal order*/
+//Solution:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int vertex;
+    struct Node* next;
+};
+
+struct Node* createNode(int v) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->vertex = v;
+    newNode->next = NULL;
+    return newNode;
+}
+
+int main() {
+    int n, m;
+    scanf("%d", &n);
+    scanf("%d", &m);
+
+    struct Node* adj[n];
+    for (int i = 0; i < n; i++)
+        adj[i] = NULL;
+
+    int u, v;
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d", &u, &v);
+
+        struct Node* newNode = createNode(v);
+        newNode->next = adj[u];
+        adj[u] = newNode;
+
+        newNode = createNode(u);
+        newNode->next = adj[v];
+        adj[v] = newNode;
+    }
+
+    int s;
+    scanf("%d", &s);
+
+    int visited[n];
+    for (int i = 0; i < n; i++)
+        visited[i] = 0;
+
+    int queue[1000];
+    int front = 0, rear = 0;
+
+    queue[rear++] = s;
+    visited[s] = 1;
+
+    while (front < rear) {
+        int curr = queue[front++];
+        printf("%d ", curr);
+
+        struct Node* temp = adj[curr];
+        while (temp) {
+            if (!visited[temp->vertex]) {
+                visited[temp->vertex] = 1;
+                queue[rear++] = temp->vertex;
+            }
+            temp = temp->next;
+        }
+    }
+
+    return 0;
+}`,
+    leetcode: `int orangesRotting(int** grid, int gridSize, int* gridColSize) {
+    int m = gridSize, n = gridColSize[0];
+
+    int queue[1000][2];
+    int front = 0, rear = 0;
+
+    int fresh = 0;
+
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (grid[i][j] == 2) {
+                queue[rear][0] = i;
+                queue[rear][1] = j;
+                rear++;
+            }
+            if (grid[i][j] == 1)
+                fresh++;
+        }
+    }
+
+    int minutes = 0;
+
+    int dirs[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};
+
+    while (front < rear && fresh > 0) {
+        int size = rear - front;
+
+        for (int i = 0; i < size; i++) {
+            int x = queue[front][0];
+            int y = queue[front][1];
+            front++;
+
+            for (int d = 0; d < 4; d++) {
+                int nx = x + dirs[d][0];
+                int ny = y + dirs[d][1];
+
+                if (nx >= 0 && ny >= 0 && nx < m && ny < n && grid[nx][ny] == 1) {
+                    grid[nx][ny] = 2;
+                    queue[rear][0] = nx;
+                    queue[rear][1] = ny;
+                    rear++;
+                    fresh--;
+                }
+            }
+        }
+
+        minutes++;
+    }
+
+    if (fresh > 0)
+        return -1;
+
+    return minutes;
+}`
+  },
   
   
   
