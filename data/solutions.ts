@@ -6836,7 +6836,7 @@ int main() {
 
     return 0;
 }`,
-    GeekForGeeks: `class Solution {
+    geekforgeeks: `class Solution {
 public:
     bool dfs(int node, int parent, vector<int> adj[], vector<int>& visited) {
         visited[node] = 1;
@@ -6941,7 +6941,7 @@ int main() {
 
     return 0;
 }`,
-    LeetCode: `bool dfs(int node, int** adj, int* adjSize, int* vis, int* rec) {
+    leetcode: `bool dfs(int node, int** adj, int* adjSize, int* vis, int* rec) {
     vis[node] = 1;
     rec[node] = 1;
 
