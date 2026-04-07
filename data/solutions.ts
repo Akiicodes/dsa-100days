@@ -6877,7 +6877,115 @@ public:
     }
 };`
   },
-  
+  66: {
+    github: `/*Problem: Detect cycle in directed graph using DFS and recursion stack.
+
+Output:
+- YES if cycle exists*/
+//Solution:
+#include <stdio.h>
+
+int dfs(int node, int adj[][100], int visited[], int recStack[], int V) {
+    visited[node] = 1;
+    recStack[node] = 1;
+
+    for (int i = 0; i < V; i++) {
+        if (adj[node][i]) {
+            if (!visited[i]) {
+                if (dfs(i, adj, visited, recStack, V))
+                    return 1;
+            } else if (recStack[i]) {
+                return 1;
+            }
+        }
+    }
+
+    recStack[node] = 0;
+    return 0;
+}
+
+int detectCycle(int V, int adj[][100]) {
+    int visited[V], recStack[V];
+    for (int i = 0; i < V; i++) {
+        visited[i] = 0;
+        recStack[i] = 0;
+    }
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            if (dfs(i, adj, visited, recStack, V))
+                return 1;
+        }
+    }
+
+    return 0;
+}
+
+int main() {
+    int V, E;
+    scanf("%d %d", &V, &E);
+    
+    int adj[100][100] = {0}; // Assuming maximum of 100 vertices; adjust as needed.
+
+    for (int i = 0; i < E; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        adj[u][v] = 1;  // Directed edge from u to v
+    }
+
+    if (detectCycle(V, adj)) {
+        printf("YES\n");
+    } else {
+        printf("NO\n");
+    }
+
+    return 0;
+}`,
+    LeetCode: `bool dfs(int node, int** adj, int* adjSize, int* vis, int* rec) {
+    vis[node] = 1;
+    rec[node] = 1;
+
+    for (int i = 0; i < adjSize[node]; i++) {
+        int next = adj[node][i];
+
+        if (!vis[next]) {
+            if (dfs(next, adj, adjSize, vis, rec))
+                return true;
+        } else if (rec[next]) {
+            return true;
+        }
+    }
+
+    rec[node] = 0;
+    return false;
+}
+
+bool canFinish(int numCourses, int** prerequisites, int prerequisitesSize, int* prerequisitesColSize) {
+    int** adj = (int**)malloc(numCourses * sizeof(int*));
+    int* adjSize = (int*)calloc(numCourses, sizeof(int));
+
+    for (int i = 0; i < numCourses; i++)
+        adj[i] = (int*)malloc(numCourses * sizeof(int));
+
+    for (int i = 0; i < prerequisitesSize; i++) {
+        int a = prerequisites[i][0];
+        int b = prerequisites[i][1];
+        adj[b][adjSize[b]++] = a;
+    }
+
+    int* vis = (int*)calloc(numCourses, sizeof(int));
+    int* rec = (int*)calloc(numCourses, sizeof(int));
+
+    for (int i = 0; i < numCourses; i++) {
+        if (!vis[i]) {
+            if (dfs(i, adj, adjSize, vis, rec))
+                return false;
+        }
+    }
+
+    return true;
+}`
+  },
   
   
 }
