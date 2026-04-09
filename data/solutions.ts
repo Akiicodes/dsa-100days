@@ -7096,6 +7096,140 @@ int main() {
     return result;
 }`
   },
+  68: {
+    github: `/*Problem: Implement topological sorting using in-degree array and queue (Kahnâ€™s Algorithm).*/
+//Solution:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int v;
+    struct Node* next;
+};
+
+struct Node* createNode(int v) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->v = v;
+    node->next = NULL;
+    return node;
+}
+
+int main() {
+    int V, E;
+    scanf("%d %d", &V, &E);
+
+    struct Node* adj[V];
+    for (int i = 0; i < V; i++)
+        adj[i] = NULL;
+
+    int indegree[V];
+    for (int i = 0; i < V; i++)
+        indegree[i] = 0;
+
+    int u, v;
+    for (int i = 0; i < E; i++) {
+        scanf("%d %d", &u, &v);
+
+        struct Node* newNode = createNode(v);
+        newNode->next = adj[u];
+        adj[u] = newNode;
+
+        indegree[v]++;
+    }
+
+    int queue[V];
+    int front = 0, rear = 0;
+
+    for (int i = 0; i < V; i++) {
+        if (indegree[i] == 0)
+            queue[rear++] = i;
+    }
+
+    int topo[V], index = 0;
+
+    while (front < rear) {
+        int node = queue[front++];
+        topo[index++] = node;
+
+        struct Node* temp = adj[node];
+        while (temp) {
+            indegree[temp->v]--;
+            if (indegree[temp->v] == 0)
+                queue[rear++] = temp->v;
+            temp = temp->next;
+        }
+    }
+
+    if (index != V) {
+        printf("Cycle exists\n");
+    } else {
+        for (int i = 0; i < V; i++)
+            printf("%d ", topo[i]);
+    }
+
+    return 0;
+}`,
+    leetcode: `class Solution {
+public:
+    string findOrder(vector<string> &words) {
+        vector<vector<int>> adj(26);
+        vector<int> indegree(26, 0);
+        vector<int> present(26, 0);
+
+        for (auto &w : words)
+            for (char c : w)
+                present[c - 'a'] = 1;
+
+        for (int i = 0; i < words.size() - 1; i++) {
+            string s1 = words[i];
+            string s2 = words[i + 1];
+
+            int len = min(s1.size(), s2.size());
+            bool found = false;
+
+            for (int j = 0; j < len; j++) {
+                if (s1[j] != s2[j]) {
+                    adj[s1[j] - 'a'].push_back(s2[j] - 'a');
+                    indegree[s2[j] - 'a']++;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found && s1.size() > s2.size())
+                return "";
+        }
+
+        queue<int> q;
+        for (int i = 0; i < 26; i++) {
+            if (present[i] && indegree[i] == 0)
+                q.push(i);
+        }
+
+        string ans = "";
+
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+
+            ans += (char)(node + 'a');
+
+            for (auto it : adj[node]) {
+                indegree[it]--;
+                if (indegree[it] == 0)
+                    q.push(it);
+            }
+        }
+
+        for (int i = 0; i < 26; i++) {
+            if (present[i] && indegree[i] > 0)
+                return "";
+        }
+
+        return ans;
+    }
+};`
+  },
   
   
 }
