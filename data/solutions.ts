@@ -7421,5 +7421,106 @@ int networkDelayTime(int** times, int timesSize, int* timesColSize, int n, int k
     return max;
 };`
   },
+  70: {
+    github: `/*Problem: Compute shortest path from source and detect negative weight cycles using Bellman-Ford.
+
+Input:
+- n vertices
+- m edges (u,v,w)
+
+Output:
+- Shortest distances OR NEGATIVE CYCLE*/
+//Solution:
+#include <stdio.h>
+#include <limits.h>
+
+struct Edge {
+    int u, v, w;
+};
+
+int main() {
+    int V, E;
+    scanf("%d %d", &V, &E);
+
+    struct Edge edges[E];
+
+    for (int i = 0; i < E; i++)
+        scanf("%d %d %d", &edges[i].u, &edges[i].v, &edges[i].w);
+
+    int src;
+    scanf("%d", &src);
+
+    int dist[V];
+
+    for (int i = 0; i < V; i++)
+        dist[i] = INT_MAX;
+
+    dist[src] = 0;
+
+    for (int i = 1; i <= V - 1; i++) {
+        for (int j = 0; j < E; j++) {
+            int u = edges[j].u;
+            int v = edges[j].v;
+            int w = edges[j].w;
+
+            if (dist[u] != INT_MAX && dist[u] + w < dist[v])
+                dist[v] = dist[u] + w;
+        }
+    }
+
+    for (int j = 0; j < E; j++) {
+        int u = edges[j].u;
+        int v = edges[j].v;
+        int w = edges[j].w;
+
+        if (dist[u] != INT_MAX && dist[u] + w < dist[v]) {
+            printf("NEGATIVE CYCLE\n");
+            return 0;
+        }
+    }
+
+    for (int i = 0; i < V; i++)
+        printf("%d ", dist[i]);
+
+    return 0;
+}
+`,
+    leetcode: `#include <limits.h>
+#include <stdlib.h>
+
+int findCheapestPrice(int n, int** flights, int flightsSize, int* flightsColSize, int src, int dst, int k) {
+    int* dist = (int*)malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++)
+        dist[i] = INT_MAX;
+
+    dist[src] = 0;
+
+    for (int i = 0; i <= k; i++) {
+        int* temp = (int*)malloc(n * sizeof(int));
+        for (int j = 0; j < n; j++)
+            temp[j] = dist[j];
+
+        for (int j = 0; j < flightsSize; j++) {
+            int u = flights[j][0];
+            int v = flights[j][1];
+            int w = flights[j][2];
+
+            if (dist[u] != INT_MAX && dist[u] + w < temp[v]) {
+                temp[v] = dist[u] + w;
+            }
+        }
+
+        for (int j = 0; j < n; j++)
+            dist[j] = temp[j];
+
+        free(temp);
+    }
+
+    if (dist[dst] == INT_MAX)
+        return -1;
+
+    return dist[dst];
+}`
+  },
   
 }
