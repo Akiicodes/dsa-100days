@@ -7522,5 +7522,141 @@ int findCheapestPrice(int n, int** flights, int flightsSize, int* flightsColSize
     return dist[dst];
 }`
   },
+  71: {
+    github: `/*Problem Statement
+Implement a hash table using quadratic probing with formula:
+
+h(k, i) = (h(k) + i*i) % m
+
+Input Format
+Same as previous.
+
+Output Format
+Result of SEARCH operations.
+
+Sample Input
+7
+4
+INSERT 49
+INSERT 56
+SEARCH 49
+SEARCH 15
+
+Sample Output
+FOUND
+NOT FOUND
+
+Explanation
+Collisions resolved using i² jumps.*/
+//Solution:
+#include <stdio.h>
+#include <string.h>
+
+#define SIZE 1000
+
+int table[SIZE];
+
+void init(int m) {
+    for (int i = 0; i < m; i++)
+        table[i] = -1;
+}
+
+void insert(int key, int m) {
+    int h = key % m;
+
+    for (int i = 0; i < m; i++) {
+        int idx = (h + i * i) % m;
+        if (table[idx] == -1) {
+            table[idx] = key;
+            return;
+        }
+    }
+}
+
+int search(int key, int m) {
+    int h = key % m;
+
+    for (int i = 0; i < m; i++) {
+        int idx = (h + i * i) % m;
+
+        if (table[idx] == key)
+            return 1;
+
+        if (table[idx] == -1)
+            return 0;
+    }
+
+    return 0;
+}
+
+int main() {
+    int m, q;
+    scanf("%d", &m);
+    scanf("%d", &q);
+
+    init(m);
+
+    while (q--) {
+        char op[10];
+        int key;
+
+        scanf("%s %d", op, &key);
+
+        if (strcmp(op, "INSERT") == 0)
+            insert(key, m);
+        else if (strcmp(op, "SEARCH") == 0) {
+            if (search(key, m))
+                printf("FOUND\n");
+            else
+                printf("NOT FOUND\n");
+        }
+    }
+
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+#include <limits.h>
+
+int min(int a, int b) {
+    return a < b ? a : b;
+}
+
+int manhattan(int* a, int* b) {
+    return abs(a[0] - b[0]) + abs(a[1] - b[1]);
+}
+
+int minCostConnectPoints(int** points, int pointsSize, int* pointsColSize) {
+    int* dist = (int*)malloc(pointsSize * sizeof(int));
+    int* visited = (int*)calloc(pointsSize, sizeof(int));
+
+    for (int i = 0; i < pointsSize; i++)
+        dist[i] = INT_MAX;
+
+    dist[0] = 0;
+    int cost = 0;
+
+    for (int i = 0; i < pointsSize; i++) {
+        int u = -1;
+
+        for (int j = 0; j < pointsSize; j++) {
+            if (!visited[j] && (u == -1 || dist[j] < dist[u]))
+                u = j;
+        }
+
+        visited[u] = 1;
+        cost += dist[u];
+
+        for (int v = 0; v < pointsSize; v++) {
+            if (!visited[v]) {
+                int d = manhattan(points[u], points[v]);
+                dist[v] = min(dist[v], d);
+            }
+        }
+    }
+
+    return cost;
+}`
+  },
   
 }
