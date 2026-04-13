@@ -7658,5 +7658,75 @@ int minCostConnectPoints(int** points, int pointsSize, int* pointsColSize) {
     return cost;
 }`
   },
+  72: {
+    github: `/*Problem Statement
+Given a string s consisting of lowercase letters, find the first repeated character in the string. A character is considered repeated if it appears more than once, and among all such characters, the one whose second occurrence has the smallest index should be returned.
+
+Input Format
+A single string s.
+
+Output Format
+Print the first repeated character. If no character is repeated, print -1.
+
+Sample Input
+geeksforgeeks
+
+Sample Output
+e*/
+//Solution:
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char s[1000];
+    scanf("%s", s);
+
+    int freq[26] = {0};
+
+    for (int i = 0; s[i]; i++) {
+        int idx = s[i] - 'a';
+        freq[idx]++;
+
+        if (freq[idx] == 2) {
+            printf("%c", s[i]);
+            return 0;
+        }
+    }
+
+    printf("-1");
+    return 0;
+}
+`,
+    leetcode: `class Solution {
+public:
+    int dp[1<<15][15];
+
+    int solve(int mask, int pos, vector<vector<int>>& cost, int n) {
+        if (mask == (1 << n) - 1)
+            return cost[pos][0];
+
+        if (dp[mask][pos] != -1)
+            return dp[mask][pos];
+
+        int ans = INT_MAX;
+
+        for (int city = 0; city < n; city++) {
+            if ((mask & (1 << city)) == 0) {
+                int newAns = cost[pos][city] +
+                             solve(mask | (1 << city), city, cost, n);
+                ans = min(ans, newAns);
+            }
+        }
+
+        return dp[mask][pos] = ans;
+    }
+
+    int tsp(vector<vector<int>>& cost) {
+        int n = cost.size();
+        memset(dp, -1, sizeof(dp));
+        return solve(1, 0, cost, n);
+    }
+};`
+  },
   
 }
