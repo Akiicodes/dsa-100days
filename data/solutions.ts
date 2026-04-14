@@ -7728,5 +7728,98 @@ public:
     }
 };`
   },
-  
+  73: {
+    github: `/*Problem Statement
+Given a string s consisting of lowercase English letters, find and return the first character that does not repeat in the string. If all characters repeat, return '$'.
+
+Input Format
+A single string s.
+
+Output Format
+Print the first non-repeating character or '$' if none exists.
+
+Sample Input
+geeksforgeeks
+
+Sample Output
+f
+
+Explanation
+The character 'f' occurs only once in the string and appears before any other non-repeating character.*/
+//Solution:
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char s[1000];
+    scanf("%s", s);
+
+    int freq[26] = {0};
+
+    for (int i = 0; s[i]; i++)
+        freq[s[i] - 'a']++;
+
+    for (int i = 0; s[i]; i++) {
+        if (freq[s[i] - 'a'] == 1) {
+            printf("%c", s[i]);
+            return 0;
+        }
+    }
+
+    printf("$");
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+int find(int parent[], int x) {
+    if (parent[x] != x)
+        parent[x] = find(parent, parent[x]);
+    return parent[x];
+}
+
+void unionSet(int parent[], int rank[], int x, int y) {
+    int px = find(parent, x);
+    int py = find(parent, y);
+
+    if (px == py) return;
+
+    if (rank[px] < rank[py])
+        parent[px] = py;
+    else if (rank[px] > rank[py])
+        parent[py] = px;
+    else {
+        parent[py] = px;
+        rank[px]++;
+    }
+}
+
+int* findRedundantConnection(int** edges, int edgesSize, int* edgesColSize, int* returnSize) {
+    int n = edgesSize;
+
+    int parent[n+1], rank[n+1];
+
+    for (int i = 1; i <= n; i++) {
+        parent[i] = i;
+        rank[i] = 0;
+    }
+
+    int* res = (int*)malloc(2 * sizeof(int));
+
+    for (int i = 0; i < edgesSize; i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+
+        if (find(parent, u) == find(parent, v)) {
+            res[0] = u;
+            res[1] = v;
+        } else {
+            unionSet(parent, rank, u, v);
+        }
+    }
+
+    *returnSize = 2;
+    return res;
+}`
+  },
 }
