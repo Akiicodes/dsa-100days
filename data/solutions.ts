@@ -8139,4 +8139,159 @@ struct Node *cloneGraph(struct Node *s) {
     return dfs(s);
 }`
   },
+  77: {
+    github: `/*Problem Statement
+Using BFS or DFS, check if the entire graph is connected.
+
+Input Format
+n m
+edges
+
+Output Format
+CONNECTED
+NOT CONNECTED
+
+Sample Input
+4 2
+1 2
+3 4
+
+Sample Output
+NOT CONNECTED*/
+//Solution:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int v;
+    struct Node* next;
+};
+
+struct Node* createNode(int v) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->v = v;
+    node->next = NULL;
+    return node;
+}
+
+void dfs(int node, struct Node* adj[], int visited[]) {
+    visited[node] = 1;
+
+    struct Node* temp = adj[node];
+    while (temp) {
+        if (!visited[temp->v])
+            dfs(temp->v, adj, visited);
+        temp = temp->next;
+    }
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    struct Node* adj[n + 1];
+    for (int i = 1; i <= n; i++)
+        adj[i] = NULL;
+
+    int u, v;
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d", &u, &v);
+
+        struct Node* n1 = createNode(v);
+        n1->next = adj[u];
+        adj[u] = n1;
+
+        struct Node* n2 = createNode(u);
+        n2->next = adj[v];
+        adj[v] = n2;
+    }
+
+    int visited[n + 1];
+    for (int i = 1; i <= n; i++)
+        visited[i] = 0;
+
+    dfs(1, adj, visited);
+
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            printf("NOT CONNECTED");
+            return 0;
+        }
+    }
+
+    printf("CONNECTED");
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+int timer = 0;
+
+void dfs(int u, int parent, int** adj, int* adjSize, int* disc, int* low,
+         int** res, int* returnSize) {
+
+    disc[u] = low[u] = ++timer;
+
+    for (int i = 0; i < adjSize[u]; i++) {
+        int v = adj[u][i];
+
+        if (v == parent) continue;
+
+        if (disc[v] == 0) {
+            dfs(v, u, adj, adjSize, disc, low, res, returnSize);
+
+            if (low[v] < low[u]) low[u] = low[v];
+
+            if (low[v] > disc[u]) {
+                res[*returnSize] = (int*)malloc(2 * sizeof(int));
+                res[*returnSize][0] = u;
+                res[*returnSize][1] = v;
+                (*returnSize)++;
+            }
+        } else {
+            if (disc[v] < low[u]) low[u] = disc[v];
+        }
+    }
+}
+
+int** criticalConnections(int n, int** connections, int connectionsSize,
+                         int* connectionsColSize, int* returnSize,
+                         int** returnColumnSizes) {
+
+    int* adjSize = (int*)calloc(n, sizeof(int));
+    int** adj = (int**)malloc(n * sizeof(int*));
+
+    for (int i = 0; i < connectionsSize; i++) {
+        adjSize[connections[i][0]]++;
+        adjSize[connections[i][1]]++;
+    }
+
+    for (int i = 0; i < n; i++) {
+        adj[i] = (int*)malloc(adjSize[i] * sizeof(int));
+        adjSize[i] = 0;
+    }
+
+    for (int i = 0; i < connectionsSize; i++) {
+        int u = connections[i][0];
+        int v = connections[i][1];
+
+        adj[u][adjSize[u]++] = v;
+        adj[v][adjSize[v]++] = u;
+    }
+
+    int* disc = (int*)calloc(n, sizeof(int));
+    int* low = (int*)calloc(n, sizeof(int));
+
+    int** res = (int**)malloc(connectionsSize * sizeof(int*));
+    *returnSize = 0;
+
+    dfs(0, -1, adj, adjSize, disc, low, res, returnSize);
+
+    *returnColumnSizes = (int*)malloc((*returnSize) * sizeof(int));
+    for (int i = 0; i < *returnSize; i++)
+        (*returnColumnSizes)[i] = 2;
+
+    return res;
+}`
+  },
 }
