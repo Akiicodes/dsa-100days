@@ -8790,4 +8790,168 @@ int findTheCity(int n, int** edges, int edgesSize, int* edgesColSize, int distan
     return city;
 }`
   },
+  81: {
+    github: `/*Problem: Implement Bubble Sort - Implement the algorithm.
+
+Input:
+- First line: integer n
+- Second line: n space-separated integers
+
+Output:
+- Print the sorted array or search result
+
+Example:
+Input:
+5
+64 34 25 12 22
+
+Output:
+12 22 25 34 64*/
+//Solution:
+#include <stdio.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+
+    return 0;
+}
+`,
+    leetcode: `int search(int* nums, int numsSize, int target) {
+    int left = 0, right = numsSize - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target)
+            return mid;
+        else if (nums[mid] < target)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}`
+  },
+  82: {
+    github: `/*Problem: Given a sorted array of integers and a target value x, implement the Lower Bound and Upper Bound operations using Binary Search.
+
+Lower Bound: The index of the first element in the array that is greater than or equal to x.
+Upper Bound: The index of the first element in the array that is strictly greater than x.
+
+Input:
+- First line: integer n representing the size of the array
+- Second line: n space-separated sorted integers
+- Third line: integer x (the target value)
+
+Output:
+- Print two integers:
+  1) Index of the lower bound of x
+  2) Index of the upper bound of x
+
+Example:
+Input:
+7
+1 2 4 4 4 5 7
+4
+
+Output:
+2 5
+
+Explanation:
+For the given array [1, 2, 4, 4, 4, 5, 7] and x = 4:
+- The lower bound is at index 2, which is the first occurrence of 4.
+- The upper bound is at index 5, which is the first element greater than 4 (i.e., 5).
+Binary Search is used to find both bounds efficiently in O(log n) time.*/
+//Solution:
+#include <stdio.h>
+
+int lowerBound(int arr[], int n, int x) {
+    int left = 0, right = n - 1, ans = n;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid] >= x) {
+            ans = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return ans;
+}
+
+int upperBound(int arr[], int n, int x) {
+    int left = 0, right = n - 1, ans = n;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid] > x) {
+            ans = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    int x;
+    scanf("%d", &x);
+
+    int lb = lowerBound(arr, n, x);
+    int ub = upperBound(arr, n, x);
+
+    printf("%d %d", lb, ub);
+
+    return 0;
+}
+`,
+    leetcode: `int searchInsert(int* nums, int numsSize, int target) {
+    int left = 0, right = numsSize - 1, ans = numsSize;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] >= target) {
+            ans = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return ans;
+}`
+  },
 }
