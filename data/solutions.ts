@@ -8954,4 +8954,77 @@ int main() {
     return ans;
 }`
   },
+  83: {
+    github: `/*Problem: Implement Selection Sort - Implement the algorithm.
+
+Input:
+- First line: integer n
+- Second line: n space-separated integers
+
+Output:
+- Print the sorted array or search result
+
+Example:
+Input:
+5
+64 34 25 12 22
+
+Output:
+12 22 25 34 64*/
+//Solution:
+#include <stdio.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        int temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
+    }
+
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+
+    return 0;
+}
+`,
+    leetcode: `int search(int* nums, int numsSize, int target) {
+    int left = 0, right = numsSize - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target)
+            return mid;
+
+        if (nums[left] <= nums[mid]) {
+            if (nums[left] <= target && target < nums[mid])
+                right = mid - 1;
+            else
+                left = mid + 1;
+        } else {
+            if (nums[mid] < target && target <= nums[right])
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+    }
+
+    return -1;
+}`
+  },
 }
