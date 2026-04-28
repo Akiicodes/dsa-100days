@@ -9250,4 +9250,92 @@ int main() {
     return (int)ans;
 }`
   },
+  87: {
+    github: `/*Problem: Implement Binary Search Iterative - Implement the algorithm.
+
+Input:
+- First line: integer n
+- Second line: n space-separated integers
+
+Output:
+- Print the sorted array or search result
+
+Example:
+Input:
+5
+64 34 25 12 22
+
+Output:
+12 22 25 34 64*/
+//Solution:
+#include <stdio.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    int target;
+    scanf("%d", &target);
+
+    int left = 0, right = n - 1;
+    int found = -1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid] == target) {
+            found = mid;
+            break;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    printf("%d", found);
+
+    return 0;
+}
+`,
+    leetcode: `#include <limits.h>
+
+int canEat(int* piles, int n, int k, int h) {
+    long long hours = 0;
+
+    for (int i = 0; i < n; i++) {
+        hours += (piles[i] + k - 1) / k; // ceil division
+    }
+
+    return hours <= h;
+}
+
+int minEatingSpeed(int* piles, int pilesSize, int h) {
+    int left = 1, right = 0;
+
+    for (int i = 0; i < pilesSize; i++) {
+        if (piles[i] > right)
+            right = piles[i];
+    }
+
+    int ans = right;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (canEat(piles, pilesSize, mid, h)) {
+            ans = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return ans;
+}`
+  },
 }
