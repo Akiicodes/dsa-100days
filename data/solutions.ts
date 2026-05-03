@@ -9770,4 +9770,96 @@ int main() {
     }
 }`
   },
+  92: {
+    github: `/*Problem: Implement Quick Sort using partition method (Lomuto or Hoare).*/
+//Solution:
+#include <stdio.h>
+
+void swap(int* a, int* b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+
+    swap(&arr[i + 1], &arr[high]);
+    return i + 1;
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    quickSort(arr, 0, n - 1);
+
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+void swap(int* a, int* b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int quickSelect(int* nums, int left, int right, int k) {
+    while (left <= right) {
+        int pivot = nums[left + rand() % (right - left + 1)];
+
+        int low = left, mid = left, high = right;
+
+        while (mid <= high) {
+            if (nums[mid] < pivot) {
+                swap(&nums[low], &nums[mid]);
+                low++;
+                mid++;
+            } else if (nums[mid] > pivot) {
+                swap(&nums[mid], &nums[high]);
+                high--;
+            } else {
+                mid++;
+            }
+        }
+
+        if (k < low)
+            right = low - 1;
+        else if (k > high)
+            left = high + 1;
+        else
+            return nums[k];
+    }
+    return -1;
+}
+
+int findKthLargest(int* nums, int numsSize, int k) {
+    return quickSelect(nums, 0, numsSize - 1, numsSize - k);
+}`
+  },
 }
