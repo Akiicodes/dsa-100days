@@ -9862,4 +9862,70 @@ int findKthLargest(int* nums, int numsSize, int k) {
     return quickSelect(nums, 0, numsSize - 1, numsSize - k);
 }`
   },
+  93: {
+    github: `/*Problem: Sort an array using insertion sort.
+Stable sort. Good for nearly sorted arrays.*/
+//Solution:
+#include <stdio.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+
+        arr[j + 1] = key;
+    }
+
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+
+    return 0;
+}
+`,
+    leetcode: `/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+
+struct ListNode* insertionSortList(struct ListNode* head) {
+    if (!head) return head;
+
+    struct ListNode dummy;
+    dummy.next = NULL;
+
+    struct ListNode* curr = head;
+
+    while (curr) {
+        struct ListNode* nextNode = curr->next;
+
+        struct ListNode* prev = &dummy;
+
+        while (prev->next && prev->next->val < curr->val) {
+            prev = prev->next;
+        }
+
+        curr->next = prev->next;
+        prev->next = curr;
+
+        curr = nextNode;
+    }
+
+    return dummy.next;
+}`
+  },
 }
