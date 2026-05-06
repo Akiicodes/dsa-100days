@@ -10013,4 +10013,144 @@ int main() {
     return result;
 }`
   },
+  95: {
+    github: `/*Problem: Given n real numbers in [0,1), sort using bucket sort algorithm.
+Distribute into buckets, sort each, concatenate.*/
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    float data;
+    struct Node* next;
+} Node;
+
+void insertSorted(Node** head, float value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (*head == NULL || (*head)->data >= value) {
+        newNode->next = *head;
+        *head = newNode;
+        return;
+    }
+
+    Node* curr = *head;
+
+    while (curr->next && curr->next->data < value) {
+        curr = curr->next;
+    }
+
+    newNode->next = curr->next;
+    curr->next = newNode;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    float arr[n];
+
+    for (int i = 0; i < n; i++) {
+        scanf("%f", &arr[i]);
+    }
+
+    Node* buckets[n];
+
+    for (int i = 0; i < n; i++) {
+        buckets[i] = NULL;
+    }
+
+    for (int i = 0; i < n; i++) {
+        int index = arr[i] * n;
+        insertSorted(&buckets[index], arr[i]);
+    }
+
+    int k = 0;
+
+    for (int i = 0; i < n; i++) {
+        Node* temp = buckets[i];
+
+        while (temp) {
+            arr[k++] = temp->data;
+            temp = temp->next;
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf("%.2f ", arr[i]);
+    }
+
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+#include <limits.h>
+
+typedef struct {
+    int used;
+    int min;
+    int max;
+} Bucket;
+
+int maximumGap(int* nums, int numsSize) {
+    if (numsSize < 2)
+        return 0;
+
+    int minVal = INT_MAX;
+    int maxVal = INT_MIN;
+
+    for (int i = 0; i < numsSize; i++) {
+        if (nums[i] < minVal) minVal = nums[i];
+        if (nums[i] > maxVal) maxVal = nums[i];
+    }
+
+    if (minVal == maxVal)
+        return 0;
+
+    int bucketSize = (maxVal - minVal) / (numsSize - 1);
+    if (bucketSize == 0) bucketSize = 1;
+
+    int bucketCount = (maxVal - minVal) / bucketSize + 1;
+
+    Bucket* buckets = (Bucket*)malloc(bucketCount * sizeof(Bucket));
+
+    for (int i = 0; i < bucketCount; i++) {
+        buckets[i].used = 0;
+        buckets[i].min = INT_MAX;
+        buckets[i].max = INT_MIN;
+    }
+
+    for (int i = 0; i < numsSize; i++) {
+        int idx = (nums[i] - minVal) / bucketSize;
+
+        buckets[idx].used = 1;
+
+        if (nums[i] < buckets[idx].min)
+            buckets[idx].min = nums[i];
+
+        if (nums[i] > buckets[idx].max)
+            buckets[idx].max = nums[i];
+    }
+
+    int prevMax = minVal;
+    int maxGap = 0;
+
+    for (int i = 0; i < bucketCount; i++) {
+        if (!buckets[i].used)
+            continue;
+
+        int gap = buckets[i].min - prevMax;
+
+        if (gap > maxGap)
+            maxGap = gap;
+
+        prevMax = buckets[i].max;
+    }
+
+    free(buckets);
+
+    return maxGap;
+}`
+  },
 }
