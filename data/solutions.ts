@@ -10511,4 +10511,288 @@ int** merge(int** intervals, int intervalsSize, int* intervalsColSize,
     return result;
 }`
   },
+  99: {
+    github: `/*Problem: Given a target distance and cars’ positions & speeds, compute the number of car fleets reaching the destination.
+Sort cars by position in descending order and calculate time to reach target.*/
+//Solution:
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int position;
+    double time;
+} Car;
+
+int compare(const void* a, const void* b) {
+    Car* c1 = (Car*)a;
+    Car* c2 = (Car*)b;
+
+    return c2->position - c1->position;
+}
+
+int carFleet(int target, int* position, int positionSize, int* speed) {
+
+    Car cars[positionSize];
+
+    for (int i = 0; i < positionSize; i++) {
+
+        cars[i].position = position[i];
+
+        cars[i].time = (double)(target - position[i]) / speed[i];
+    }
+
+    qsort(cars, positionSize, sizeof(Car), compare);
+
+    int fleets = 0;
+    double maxTime = 0;
+
+    for (int i = 0; i < positionSize; i++) {
+
+        if (cars[i].time > maxTime) {
+
+            fleets++;
+            maxTime = cars[i].time;
+        }
+    }
+
+    return fleets;
+}
+
+int main() {
+
+    int target, n;
+
+    scanf("%d", &target);
+
+    scanf("%d", &n);
+
+    int position[n];
+    int speed[n];
+
+    for (int i = 0; i < n; i++)
+        scanf("%d", &position[i]);
+
+    for (int i = 0; i < n; i++)
+        scanf("%d", &speed[i]);
+
+    printf("%d\n", carFleet(target, position, n, speed));
+
+    return 0;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+typedef struct {
+    int position;
+    double time;
+} Car;
+
+int compare(const void* a, const void* b) {
+    Car* c1 = (Car*)a;
+    Car* c2 = (Car*)b;
+
+    return c2->position - c1->position;
+}
+
+int carFleet(int target, int* position, int positionSize, int* speed, int speedSize) {
+
+    Car cars[positionSize];
+
+    for (int i = 0; i < positionSize; i++) {
+
+        cars[i].position = position[i];
+
+        cars[i].time = (double)(target - position[i]) / speed[i];
+    }
+
+    qsort(cars, positionSize, sizeof(Car), compare);
+
+    int fleets = 0;
+    double maxTime = 0;
+
+    for (int i = 0; i < positionSize; i++) {
+
+        if (cars[i].time > maxTime) {
+
+            fleets++;
+            maxTime = cars[i].time;
+        }
+    }
+
+    return fleets;
+}`
+  },
+  100: {
+    github: `/*Problem: For each element, count how many smaller elements appear on right side.
+Use merge sort technique or Fenwick Tree (BIT).*/
+//Solution:
+#include <stdlib.h>
+
+typedef struct {
+    int value;
+    int index;
+} Pair;
+
+void merge(Pair* arr, int left, int mid, int right, int* count) {
+
+    int n = right - left + 1;
+
+    Pair* temp = (Pair*)malloc(n * sizeof(Pair));
+
+    int i = left;
+    int j = mid + 1;
+    int k = 0;
+
+    int rightCount = 0;
+
+    while (i <= mid && j <= right) {
+
+        if (arr[j].value < arr[i].value) {
+
+            rightCount++;
+            temp[k++] = arr[j++];
+
+        } else {
+
+            count[arr[i].index] += rightCount;
+            temp[k++] = arr[i++];
+        }
+    }
+
+    while (i <= mid) {
+
+        count[arr[i].index] += rightCount;
+        temp[k++] = arr[i++];
+    }
+
+    while (j <= right) {
+        temp[k++] = arr[j++];
+    }
+
+    for (i = left, k = 0; i <= right; i++, k++) {
+        arr[i] = temp[k];
+    }
+
+    free(temp);
+}
+
+void mergeSort(Pair* arr, int left, int right, int* count) {
+
+    if (left >= right)
+        return;
+
+    int mid = left + (right - left) / 2;
+
+    mergeSort(arr, left, mid, count);
+    mergeSort(arr, mid + 1, right, count);
+
+    merge(arr, left, mid, right, count);
+}
+
+int* countSmaller(int* nums, int numsSize, int* returnSize) {
+
+    *returnSize = numsSize;
+
+    int* result = (int*)calloc(numsSize, sizeof(int));
+
+    Pair* arr = (Pair*)malloc(numsSize * sizeof(Pair));
+
+    for (int i = 0; i < numsSize; i++) {
+
+        arr[i].value = nums[i];
+        arr[i].index = i;
+    }
+
+    mergeSort(arr, 0, numsSize - 1, result);
+
+    free(arr);
+
+    return result;
+}
+`,
+    leetcode: `#include <stdlib.h>
+
+typedef struct {
+    int value;
+    int index;
+} Pair;
+
+void merge(Pair* arr, int left, int mid, int right, int* counts) {
+
+    Pair* temp = (Pair*)malloc((right - left + 1) * sizeof(Pair));
+
+    int i = left;
+    int j = mid + 1;
+    int k = 0;
+
+    int rightCount = 0;
+
+    while (i <= mid && j <= right) {
+
+        if (arr[j].value < arr[i].value) {
+
+            rightCount++;
+            temp[k++] = arr[j++];
+
+        } else {
+
+            counts[arr[i].index] += rightCount;
+            temp[k++] = arr[i++];
+        }
+    }
+
+    while (i <= mid) {
+
+        counts[arr[i].index] += rightCount;
+        temp[k++] = arr[i++];
+    }
+
+    while (j <= right) {
+        temp[k++] = arr[j++];
+    }
+
+    for (i = left, k = 0; i <= right; i++, k++) {
+        arr[i] = temp[k];
+    }
+
+    free(temp);
+}
+
+void mergeSort(Pair* arr, int left, int right, int* counts) {
+
+    if (left >= right)
+        return;
+
+    int mid = left + (right - left) / 2;
+
+    mergeSort(arr, left, mid, counts);
+    mergeSort(arr, mid + 1, right, counts);
+
+    merge(arr, left, mid, right, counts);
+}
+
+int* countSmaller(int* nums, int numsSize, int* returnSize) {
+
+    *returnSize = numsSize;
+
+    int* counts = (int*)calloc(numsSize, sizeof(int));
+
+    Pair* arr = (Pair*)malloc(numsSize * sizeof(Pair));
+
+    for (int i = 0; i < numsSize; i++) {
+
+        arr[i].value = nums[i];
+        arr[i].index = i;
+    }
+
+    mergeSort(arr, 0, numsSize - 1, counts);
+
+    free(arr);
+
+    return counts;
+}
+ 
+`
+  },
+
 }
